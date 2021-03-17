@@ -27,7 +27,7 @@
       - mariadb-client
       - mariadb-server
       - python-dev
-      - python-pip
+      - python3-pip
       - openssl
       - getmail4
       - rkhunter
@@ -39,11 +39,10 @@
       - dovecot-lmtpd
       - sudo
       - python3-mysqldb
-      - python-mysqldb
       - ruby-dev
       - bundler
 
 - name: Install pip
   apt:
-    name: python-pip
+    name: python3-pip
     state: present
