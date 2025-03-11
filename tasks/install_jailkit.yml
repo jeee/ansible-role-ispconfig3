@@ -25,11 +25,23 @@
     dest: "/tmp/"
     remote_src: yes
 
-- name: Write 5 to debian/compat
-  replace:
-    path: /tmp/jailkit-{{ jailkit_version }}/debian/compat
-    regexp: '^.*$'
-    replace: '5'
+- name: Set python3 in requirements
+  lineinfile:
+        path: /tmp/jailkit-{{ jailkit_version }}/extra/jailkit.spec
+        regexp: '^BuildRequires: python.*'
+        line: 'BuildRequires: python3'
+
+- name: Set python3 in requirements
+  lineinfile:
+        path: /tmp/jailkit-{{ jailkit_version }}/debian/control
+        regexp: '^Depends: \${shlibs:Depends}, python.*\)'
+        line: 'Depends: ${shlibs:Depends}, python3 (>= 3.12)'        
+        
+# - name: Write 5 to debian/compat
+#   replace:
+#     path: /tmp/jailkit-{{ jailkit_version }}/debian/compat
+#     regexp: '^.*$'
+#     replace: '5'
 
 - name: Check if Jailkit is already installed
   stat:
@@ -38,11 +50,15 @@
 
 - name: Build jailkit
   command: ./debian/rules binary
+  environment:
+    PYTHONINTERPRETER: '/usr/bin/python3'
   args:
     chdir: /tmp/jailkit-{{ jailkit_version }}
   when: not jailkit_installed.stat.exists
 
 - name: Install jailkit
+  environment:
+    PYTHONINTERPRETER: '/usr/bin/python3'
   apt:
     deb: /tmp/jailkit_{{ jailkit_version }}-1_amd64.deb
   when: not jailkit_installed.stat.exists

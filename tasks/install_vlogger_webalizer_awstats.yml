@@ -1,8 +1,8 @@
 ---
-- name: Install vlogger
-  apt:
-    name: vlogger
-    state: present
+# - name: Install vlogger
+#   apt:
+#     name: vlogger
+#     state: present
 
 - name: Install webalizer
   apt:

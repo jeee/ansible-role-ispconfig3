@@ -36,19 +36,21 @@
 
 - name: Install mailman
   apt:
-    name: mailman
+    name: mailman3
     state: present
     update_cache: yes
 
 - name: Search for mailing lists called mailman
-  command: 'list_lists | grep {{ mailing_list_name }} | cat'
+  shell: 'mailman --run-as-root lists --quiet | grep -i {{ mailing_list_name }} | cat'
+  
+  
   register: mailing_list_exists
   when: True
 
 - name: Create first mailing list if it does not exist already
-  command: 'newlist --quiet --urlhost=lists.{{ mail_base_domain }} {{ mailing_list_name }}
-            {{ mail_admin_email }} {{ mail_admin_password }}'
-  when: not mailing_list_name in mailing_list_exists.stdout
+  command: 'mailman --run-as-root create --quiet --owner {{ mail_admin_email }} {{ mailing_list_name }}@lists.{{ mail_base_domain }} ' 
+  
+  when: not mailing_list_name.lower() in mailing_list_exists.stdout
 
 - name: Add new aliases for mailman
   lineinfile:
@@ -68,7 +70,7 @@
     - 'mailman-unsubscribe:  "|/var/lib/mailman/mail/mailman unsubscribe mailman"'
 
 - name: Newaliases
-  command: 'newaliases'
+  command: 'mailman --run-as-root aliases'
   when: True # The newaliases is idempotent and can always be executed
 
 - name: Restart postfix
@@ -76,28 +78,28 @@
     name: postfix
     state: restarted
 
-- name: Define the alias /cgi-bin/mailman/ for all Apache vhosts
-  file:
-    src: "/etc/mailman/apache.conf"
-    dest: "/etc/apache2/conf-available/mailman.conf"
-    state: link
-
-- name: Check if mailman.conf exists
-  stat:
-    path: "/etc/apache2/conf-available/mailman.conf"
-  register: mailman_result
-
-- name: Activate configuration
-  command: 'a2enconf mailman'
-  when: not mailman_result.stat.exists
-
-- name: Restart apache2
-  service:
-    name: apache2
-    state: restarted
-
-- name: Start mailman
-  service:
-    name: mailman
-    state: started
-  become: false
+# - name: Define the alias /cgi-bin/mailman/ for all Apache vhosts
+#   file:
+#     src: "/etc/mailman/apache.conf"
+#     dest: "/etc/apache2/conf-available/mailman.conf"
+#     state: link
+# 
+# - name: Check if mailman.conf exists
+#   stat:
+#     path: "/etc/apache2/conf-available/mailman.conf"
+#   register: mailman_result
+# 
+# - name: Activate configuration
+#   command: 'a2enconf mailman'
+#   when: not mailman_result.stat.exists
+# 
+# - name: Restart apache2
+#   service:
+#     name: apache2
+#     state: restarted
+# 
+# - name: Start mailman
+#   service:
+#     name: mailman
+#     state: started
+#   become: false

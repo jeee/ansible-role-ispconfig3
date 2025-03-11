@@ -1,7 +1,7 @@
 ---
-#- name: Add additional repositories
-  #apt_repository:
-    #repo: "{{ php_repository }}"
+- name: Add additional repositories
+  apt_repository:
+    repo: "{{ php_repository }}"
 
 - name: Install php versions
   apt:
@@ -48,7 +48,6 @@
       - mcrypt
       - memcached
       - php-apcu
-#      - php-gettext
       - php-mbstring
       - php-imagick
       - php-memcache

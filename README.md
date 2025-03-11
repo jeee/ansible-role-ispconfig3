@@ -1,7 +1,7 @@
 Ansible Role: Installs and customizes ISPConfig 3 on Ubuntu Bionic
 =========
 
-The inoxio.ispconfig3 role will help you to install ISPConfig on your Ubuntu 18.04 machine.
+The inoxio.ispconfig3 role will help you to install ISPConfig on your Ubuntu 24.04 machine.
 It follows the instructions of the howtoforge.com [tutorial](https://www.howtoforge.com/tutorial/perfect-server-ubuntu-18.04-with-apache-php-myqsl-pureftpd-bind-postfix-doveot-and-ispconfig/)
 and allows customizations which will be explained in the following segments.
 It also implements Molecule as a test environment and contains a few tips if you want use Molecule for yourself.
@@ -9,7 +9,7 @@ It also implements Molecule as a test environment and contains a few tips if you
 Requirements
 ------------
 
-- Machine with Ubuntu 18.04
+- Machine with Ubuntu 24.04
 
 Dependencies
 ------------
